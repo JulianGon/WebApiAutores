@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "qoTo9l6WGg8qfyaoAldOy+OGRxzZnzoO/KjiH/iE+6Tij9+WKgK/eIfVIg++ooU5wVB7HP+6Qei+iuH2vpjJcQ==",
+  "dgSpecHash": "MVzBnMUYbGbYTBT8L/zNZzpzAu3OTLizO87j30whhC3ox7Pm2IWtNRfCaqNSRiJaBtENg2EbDSeV3FnwwdB78g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\famil\\source\\repos\\WebApiAutores\\WebApiAutores\\WebApiAutores.csproj",
+  "projectFilePath": "F:\\git\\CursoASPNET\\WebApiAutores\\WebApiAutores\\WebApiAutores.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\famil\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\famil\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
