@@ -18,7 +18,7 @@ namespace WebApiAutores.Controllers
         [HttpGet] // Especifica la función que se ejecuta con la peticion GET 
         public async Task<ActionResult<List<Autor>>> Get() 
         {
-            return await context.Autores.ToListAsync();
+            return await context.Autores.Include(x => x.Libros).ToListAsync();
         }
 
         [HttpPost]
