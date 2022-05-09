@@ -14,7 +14,7 @@ namespace WebApiAutores.Controllers
             this.context = context;
         }
 
-        [HttpGet("{id:int")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<Libro>> Get(int id)
         {
             return await context.Libros.FirstOrDefaultAsync(x => x.Id.Equals(id));
