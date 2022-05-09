@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace WebApiAutores
 {
@@ -13,7 +14,9 @@ namespace WebApiAutores
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions (x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles    // Eliminamos el bucle de libro-Autor
+            );
 
             //Configuración para el DbContext 
             services.AddDbContext<ApplicationDbContext>(options =>
