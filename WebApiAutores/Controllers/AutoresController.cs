@@ -21,6 +21,12 @@ namespace WebApiAutores.Controllers
             return await context.Autores.Include(x => x.Libros).ToListAsync();
         }
 
+        [HttpGet("primero")]    // Especifica otra URL para el mismo metodo HTTP -> api/autores/primero
+        public async Task<ActionResult<Autor>> PrimerAutor()
+        {
+            return await context.Autores.FirstOrDefaultAsync();
+        }
+
         [HttpPost]
         public async Task<ActionResult> Post(Autor autor) // El parametro de la funcion será el Request Body 
         {
