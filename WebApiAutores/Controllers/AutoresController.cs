@@ -52,6 +52,17 @@ namespace WebApiAutores.Controllers
             return autor;
         }
 
+        [HttpGet("model")] //api/autores/model?tematica=terror&valor=x
+        public async Task<ActionResult<Autor>> modelBinding([FromHeader] string nombre, [FromQuery] string tematica , [FromQuery] string valor)
+        {
+            var autor = await context.Autores.FirstOrDefaultAsync(x => x.Nombre.Contains(nombre));
+            if (autor == null)
+            {
+                return NotFound();
+            }
+            return autor;
+        }
+
         //[HttpGet("{id:int}/{param2}")] //Varios parametros de ruta
         //[HttpGet("{id:int}/{param2?}")] //param2 será opcional, sino se especifica sera null
         //[HttpGet("{id:int}/{param2=persona}")] //param2 cogerá el valor por defecto
