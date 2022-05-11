@@ -29,6 +29,33 @@ namespace WebApiAutores.Controllers
             return await context.Autores.FirstOrDefaultAsync();
         }
 
+        [HttpGet("{id:int}")] // Devuelve un recurso en específico api/autores/1 -> Devuelve el autor específico .
+        // Si no especificamos la restricción de :int (HttpGet("{id}") el error al enviar un string será un 400 en lugar del 404 programado en el EndPoint
+        public async Task<ActionResult<Autor>> Get (int id)
+        {
+            var autor = await context.Autores.FirstOrDefaultAsync(x => x.Id == id);
+            if (autor == null)
+            {
+                return NotFound();
+            }
+            return autor;
+        }
+
+        [HttpGet("{nombre}")] // No existe la restricción String
+        public async Task<ActionResult<Autor>> Get(string nombre)
+        {
+            var autor = await context.Autores.FirstOrDefaultAsync(x => x.Nombre.Contains(nombre));
+            if (autor == null)
+            {
+                return NotFound();
+            }
+            return autor;
+        }
+
+        //[HttpGet("{id:int}/{param2}")] //Varios parametros de ruta
+        //[HttpGet("{id:int}/{param2?}")] //param2 será opcional, sino se especifica sera null
+        //[HttpGet("{id:int}/{param2=persona}")] //param2 cogerá el valor por defecto
+
         [HttpPost]
         public async Task<ActionResult> Post(Autor autor) // El parametro de la funcion será el Request Body 
         {
