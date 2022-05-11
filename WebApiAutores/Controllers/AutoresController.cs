@@ -15,7 +15,9 @@ namespace WebApiAutores.Controllers
             this.context = context;
         }
 
-        [HttpGet] // Especifica la función que se ejecuta con la peticion GET 
+        [HttpGet] // Especifica la función que se ejecuta con la peticion GET. Utilizando la ruta del controlador api/autores
+        [HttpGet("listado")] // Especifico la ruta del recurso -> api/autores/listado
+        [HttpGet("/listado")] // Especifico la ruta saltándome la ruta del controller.->  /listado
         public async Task<ActionResult<List<Autor>>> Get() 
         {
             return await context.Autores.Include(x => x.Libros).ToListAsync();
