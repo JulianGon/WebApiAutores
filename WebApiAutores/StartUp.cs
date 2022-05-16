@@ -9,10 +9,7 @@ namespace WebApiAutores
     {
         public StartUp(IConfiguration configuration)
         {
-            var autoresController = new AutoresController(
-                new ApplicationDbContext(null), // De esta menera debemos de instanciar las depencias en bucle hasta que resolvamos todos los constructores 
-                new ServicioA()
-               );
+            
             Configuration = configuration;
 
         }
@@ -20,6 +17,8 @@ namespace WebApiAutores
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
+
+
             services.AddControllers().AddJsonOptions (x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles    // Eliminamos el bucle de libro-Autor
             );
@@ -28,6 +27,14 @@ namespace WebApiAutores
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"))
                 );
+
+            // Tabién podemos instanciar la clase específica como servicio 
+            //services.AddTransient<ServicioA>()
+            
+            // Aqui estoy especificandole a la aplicación que cuando una clase requiera IServicio se le pase ServicioA
+            services.AddTransient<IServicio, ServicioA>(); 
+            
+
 
             services.AddEndpointsApiExplorer();
 
