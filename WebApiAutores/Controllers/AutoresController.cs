@@ -70,6 +70,13 @@ namespace WebApiAutores.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(Autor autor) // El parametro de la funcion será el Request Body 
         {
+            //Validaciones desde el controlador
+            var existeAutor = await context.Autores.AnyAsync(x => x.Nombre == autor.Nombre);
+            if (existeAutor)
+            {
+                return BadRequest($"Ya existe un autor con el nombre: {autor.Nombre}");
+            }
+
             context.Add(autor);
             await context.SaveChangesAsync(); // Salva los cambios en la BBDD
             return Ok();
