@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using WebApiAutores.Controllers;
+using WebApiAutores.Servicios;
 
 namespace WebApiAutores
 {
@@ -7,6 +9,10 @@ namespace WebApiAutores
     {
         public StartUp(IConfiguration configuration)
         {
+            var autoresController = new AutoresController(
+                new ApplicationDbContext(null), // De esta menera debemos de instanciar las depencias en bucle hasta que resolvamos todos los constructores 
+                new ServicioA()
+               );
             Configuration = configuration;
 
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiAutores.Entidades;
+using WebApiAutores.Servicios;
 
 namespace WebApiAutores.Controllers
 {
@@ -8,10 +9,12 @@ namespace WebApiAutores.Controllers
     [Route("api/autores")] // Especifica la ruta del controlador, 
     public class AutoresController : ControllerBase
     {
+        private readonly IServicio servicio;
         private readonly ApplicationDbContext context;
 
-        public AutoresController (ApplicationDbContext context)
+        public AutoresController (ApplicationDbContext context, IServicio servicio) // Ejemplo de implementacion de acoplamiento bajo con inversión de dependencias. depender de la interfaz en lugar que de las clases específicas
         {
+            this.servicio = servicio;
             this.context = context;
         }
 
@@ -20,6 +23,7 @@ namespace WebApiAutores.Controllers
         [HttpGet("/listado")] // Especifico la ruta saltándome la ruta del controller.->  /listado
         public async Task<ActionResult<List<Autor>>> Get() 
         {
+            servicio.RealizarTarea();
             return await context.Autores.Include(x => x.Libros).ToListAsync();
         }
 
