@@ -13,15 +13,18 @@ namespace WebApiAutores.Controllers
         private readonly ServicioSingleton servicioSingleton;
         private readonly ServicioTransient servicioTransient;
         private readonly ServicioScoped servicioScoped;
+        private readonly ILogger<AutoresController> logger;
         private readonly ApplicationDbContext context;
 
         public AutoresController (ApplicationDbContext context, IServicio servicio,
-            ServicioSingleton servicioSingleton, ServicioTransient servicioTransient, ServicioScoped servicioScoped) // Ejemplo de implementacion de acoplamiento bajo con inversión de dependencias. depender de la interfaz en lugar que de las clases específicas
+            ServicioSingleton servicioSingleton, ServicioTransient servicioTransient, ServicioScoped servicioScoped,
+            ILogger<AutoresController> logger) // Ejemplo de implementacion de acoplamiento bajo con inversión de dependencias. depender de la interfaz en lugar que de las clases específicas
         {
             this.servicio = servicio;
             this.servicioSingleton = servicioSingleton;
             this.servicioTransient = servicioTransient;
             this.servicioScoped = servicioScoped;
+            this.logger = logger;
             this.context = context;
         }
 
@@ -30,7 +33,8 @@ namespace WebApiAutores.Controllers
         [HttpGet("/listado")] // Especifico la ruta saltándome la ruta del controller.->  /listado
         public async Task<ActionResult<List<Autor>>> Get() 
         {
-            servicio.RealizarTarea();
+            logger.LogInformation("Estamos obteniendo los autores");
+            
             return await context.Autores.Include(x => x.Libros).ToListAsync();
         }
 
