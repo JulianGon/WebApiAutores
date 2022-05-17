@@ -44,6 +44,13 @@ namespace WebApiAutores
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+            // Primer MiddelWare a ejecutar 
+
+            app.Run(async context => // Run corta la ejecución del resto de Middelware 
+            {
+                await context.Response.WriteAsync("Estoy al inicio de la tubería ");
+            });
+
             // Configure the HTTP request pipeline.
             if (env.IsDevelopment())
             {
@@ -57,6 +64,7 @@ namespace WebApiAutores
 
             app.UseAuthorization();
 
+            // Ultimo Middleware 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
