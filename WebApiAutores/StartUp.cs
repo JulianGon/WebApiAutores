@@ -32,9 +32,11 @@ namespace WebApiAutores
             //services.AddTransient<ServicioA>()
             
             // Aqui estoy especificandole a la aplicación que cuando una clase requiera IServicio se le pase ServicioA
-            services.AddTransient<IServicio, ServicioA>(); 
-            
+            services.AddTransient<IServicio, ServicioA>();
 
+            services.AddTransient<ServicioTransient>();
+            services.AddScoped<ServicioScoped>();
+            services.AddSingleton<ServicioSingleton>();
 
             services.AddEndpointsApiExplorer();
 

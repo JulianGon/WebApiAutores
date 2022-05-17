@@ -10,11 +10,18 @@ namespace WebApiAutores.Controllers
     public class AutoresController : ControllerBase
     {
         private readonly IServicio servicio;
+        private readonly ServicioSingleton servicioSingleton;
+        private readonly ServicioTransient servicioTransient;
+        private readonly ServicioScoped servicioScoped;
         private readonly ApplicationDbContext context;
 
-        public AutoresController (ApplicationDbContext context, IServicio servicio) // Ejemplo de implementacion de acoplamiento bajo con inversión de dependencias. depender de la interfaz en lugar que de las clases específicas
+        public AutoresController (ApplicationDbContext context, IServicio servicio,
+            ServicioSingleton servicioSingleton, ServicioTransient servicioTransient, ServicioScoped servicioScoped) // Ejemplo de implementacion de acoplamiento bajo con inversión de dependencias. depender de la interfaz en lugar que de las clases específicas
         {
             this.servicio = servicio;
+            this.servicioSingleton = servicioSingleton;
+            this.servicioTransient = servicioTransient;
+            this.servicioScoped = servicioScoped;
             this.context = context;
         }
 
@@ -25,6 +32,20 @@ namespace WebApiAutores.Controllers
         {
             servicio.RealizarTarea();
             return await context.Autores.Include(x => x.Libros).ToListAsync();
+        }
+
+        [HttpGet("guid")]
+        public ActionResult ObtenerGuids()
+        {
+            return Ok(new
+            {
+                AutoresController_Transient = servicioTransient.guid, //Transient sera distintos en ambos casos ya que siempre devolverá distintas 
+                ServicioA_Transient = servicio.ObtenerTransient(),
+                AutoresController_Scoped = servicioScoped.guid, // Scoped sera igual en ambos casos porque estamos en la misma comunicación HTTP
+                ServicioA_Scoped = servicio.ObtenerScoped(),
+                AutoresController_Singleton = servicioSingleton.guid, // Singleton será igual porque solo se instancia una vez para la aplicacion
+                ServicioA_Singleton = servicio.ObtenerSingleton()
+            });
         }
 
         [HttpGet("primero")]    // Especifica otra URL para el mismo metodo HTTP -> api/autores/primero
