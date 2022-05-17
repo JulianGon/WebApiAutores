@@ -39,6 +39,7 @@ namespace WebApiAutores.Controllers
         }
 
         [HttpGet("guid")]
+        [ResponseCache(Duration = 10)] // Si llega una peticion HTTP se guarda en memoria para todas las peticiones siguientes estén cacheadas 
         public ActionResult ObtenerGuids()
         {
             return Ok(new

@@ -41,6 +41,8 @@ namespace WebApiAutores
 
             services.AddEndpointsApiExplorer();
 
+            services.AddResponseCaching();
+
             services.AddSwaggerGen();
         }
 
@@ -72,6 +74,8 @@ namespace WebApiAutores
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseResponseCaching();
 
             app.UseAuthorization();
 
