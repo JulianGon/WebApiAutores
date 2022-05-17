@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using WebApiAutores.Controllers;
 using WebApiAutores.Middleware;
@@ -43,6 +44,8 @@ namespace WebApiAutores
 
             services.AddResponseCaching();
 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+
             services.AddSwaggerGen();
         }
 
@@ -77,7 +80,7 @@ namespace WebApiAutores
 
             app.UseResponseCaching();
 
-            app.UseAuthorization();
+            app.UseAuthorization(); // Utilizo el middleware de autenticación antes de llegar a los controllers 
 
             // Ultimo Middleware 
             app.UseEndpoints(endpoints =>

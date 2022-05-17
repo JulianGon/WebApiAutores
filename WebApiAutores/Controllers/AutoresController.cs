@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiAutores.Entidades;
 using WebApiAutores.Servicios;
@@ -31,6 +32,7 @@ namespace WebApiAutores.Controllers
         [HttpGet] // Especifica la función que se ejecuta con la peticion GET. Utilizando la ruta del controlador api/autores
         [HttpGet("listado")] // Especifico la ruta del recurso -> api/autores/listado
         [HttpGet("/listado")] // Especifico la ruta saltándome la ruta del controller.->  /listado
+        [Authorize]
         public async Task<ActionResult<List<Autor>>> Get() 
         {
             logger.LogInformation("Estamos obteniendo los autores");
