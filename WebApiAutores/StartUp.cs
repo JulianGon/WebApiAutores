@@ -49,7 +49,7 @@ namespace WebApiAutores
 
             // Crear log de las respuestas HTTP 
             // siguiente permite continuar con la tubería 
-            app.UseMiddleware<LoguearRespuestaHTTPMiddleware>();
+            app.UseLoguearRespuestaHTTP();
 
 
             // Hago una bifurcación de la tubería 

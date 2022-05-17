@@ -1,5 +1,13 @@
 ﻿namespace WebApiAutores.Middleware
 {
+    // Los metodos de extensiones son estaticos 
+    public static class WebApiAutoresMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseLoguearRespuestaHTTP ( this IApplicationBuilder app)
+        {
+            return app.UseMiddleware<LoguearRespuestaHTTPMiddleware>(); 
+        }
+    }
     public class LoguearRespuestaHTTPMiddleware
     {
         private readonly RequestDelegate siguiente;
@@ -22,6 +30,7 @@
                 var cuerpoOriginalRespuesta = context.Response.Body;
                 context.Response.Body = ms; // Cambio el cuerpo original de la respuesta por el Buffer MemoryStream
                 await siguiente(context); // LLamo al siguiente Middleware 
+
                 ms.Seek(0, SeekOrigin.Begin); // Colocamos el Stream al inicio 
                 string respuesta = new StreamReader(ms).ReadToEnd(); // Guardamos la respuesta en un string
                 ms.Seek(0, SeekOrigin.Begin); // Volvemos a colocar el Stream al inicio
