@@ -43,9 +43,31 @@ namespace WebApiAutores
             services.AddSwaggerGen();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<StartUp> servLogger) {
             // Primer MiddelWare a ejecutar 
 
+            // Crear log de las respuestas HTTP 
+            // siguiente permite continuar con la tubería 
+            app.Use(async (context, siguiente) =>
+            {
+                using (var ms = new MemoryStream()) // Creo un Buffer para guardar el Stream de la respuesta 
+                {
+                    var cuerpoOriginalRespuesta = context.Response.Body;
+                    context.Response.Body = ms; // Cambio el cuerpo original de la respuesta por el Buffer MemoryStream
+                    await siguiente.Invoke(); // LLamo al siguiente Middleware 
+                    // -> a partir de aquí se ejecuta cuando los middleware siguientes hayan devuelto su respuesta 
+
+                    ms.Seek(0, SeekOrigin.Begin); // Colocamos el Stream al inicio 
+                    string respuesta = new StreamReader(ms).ReadToEnd(); // Guardamos la respuesta en un string
+                    ms.Seek(0, SeekOrigin.Begin); // Volvemos a colocar el Stream al inicio
+
+                    await ms.CopyToAsync(cuerpoOriginalRespuesta); // Lo copiamos al cuerpo original 
+                    context.Response.Body = cuerpoOriginalRespuesta; // Lo dejamos para que el cliente pueda leer el Stream 
+
+                    servLogger.LogInformation(respuesta); // Con esta linea Logger podrá crear logs de todas las peticiones HTTP 
+
+                }
+            });
             // Hago una bifurcación de la tubería 
             app.Map("/ruta1", app =>
             {
