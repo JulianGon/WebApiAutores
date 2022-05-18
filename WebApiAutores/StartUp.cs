@@ -38,6 +38,8 @@ namespace WebApiAutores
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
             services.AddSwaggerGen();
+
+            services.AddAutoMapper(typeof(StartUp));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<StartUp> servLogger) {

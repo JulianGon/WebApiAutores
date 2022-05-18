@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApiAutores.DTOs;
 using WebApiAutores.Entidades;
 using WebApiAutores.Filtros;
 
@@ -11,11 +13,13 @@ namespace WebApiAutores.Controllers
     public class AutoresController : ControllerBase
     {
         private readonly ApplicationDbContext context;
+        private readonly IMapper mapper;
 
-        public AutoresController (ApplicationDbContext context)
+        public AutoresController (ApplicationDbContext context, IMapper mapper)
         {
             
             this.context = context;
+            this.mapper = mapper;
         }
 
         [HttpGet] // Especifica la función que se ejecuta con la peticion GET. Utilizando la ruta del controlador api/autores
@@ -60,14 +64,15 @@ namespace WebApiAutores.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post(Autor autor) // El parametro de la funcion será el Request Body 
+        public async Task<ActionResult> Post([FromBody] AutorCreacionDTO autorCreacionDTO) // El parametro de la funcion será el Request Body 
         {
             //Validaciones desde el controlador
-            var existeAutor = await context.Autores.AnyAsync(x => x.Nombre == autor.Nombre);
+            var existeAutor = await context.Autores.AnyAsync(x => x.Nombre == autorCreacionDTO.Nombre);
             if (existeAutor)
             {
-                return BadRequest($"Ya existe un autor con el nombre: {autor.Nombre}");
+                return BadRequest($"Ya existe un autor con el nombre: {autorCreacionDTO.Nombre}");
             }
+            var autor = mapper.Map<Autor>(autorCreacionDTO);
 
             context.Add(autor);
             await context.SaveChangesAsync(); // Salva los cambios en la BBDD
