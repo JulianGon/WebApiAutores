@@ -23,44 +23,42 @@ namespace WebApiAutores.Controllers
         }
 
         [HttpGet] // Especifica la función que se ejecuta con la peticion GET. Utilizando la ruta del controlador api/autores
-        public async Task<ActionResult<List<Autor>>> Get() 
+        public async Task<ActionResult<List<AutorDTO>>> Get() 
         {
-            return await context.Autores.ToListAsync();
+            var autores = await context.Autores.ToListAsync();
+            return mapper.Map<List<AutorDTO>>(autores);
         }
 
         
         [HttpGet("{id:int}")] // Devuelve un recurso en específico api/autores/1 -> Devuelve el autor específico .
         // Si no especificamos la restricción de :int (HttpGet("{id}") el error al enviar un string será un 400 en lugar del 404 programado en el EndPoint
-        public async Task<ActionResult<Autor>> Get (int id)
+        public async Task<ActionResult<AutorDTO>> Get (int id)
         {
-            var autor = await context.Autores.FirstOrDefaultAsync(x => x.Id == id);
+            var autor = await context.Autores.FirstOrDefaultAsync(autorBD => autorBD.Id == id);
             if (autor == null)
             {
                 return NotFound();
             }
-            return autor;
+            return mapper.Map<AutorDTO>(autor);
         }
 
         [HttpGet("{nombre}")] // No existe la restricción String
-        public async Task<ActionResult<Autor>> Get(string nombre)
+        public async Task<ActionResult<List<AutorDTO>>> Get(string nombre)
         {
-            var autor = await context.Autores.FirstOrDefaultAsync(x => x.Nombre.Contains(nombre));
-            if (autor == null)
-            {
-                return NotFound();
-            }
-            return autor;
+            var autores = await context.Autores.Where(autorBD => autorBD.Nombre.Contains(nombre)).ToListAsync();
+            
+            return mapper.Map<List<AutorDTO>>(autores);
         }
 
         [HttpGet("model")] //api/autores/model?tematica=terror&valor=x
-        public async Task<ActionResult<Autor>> modelBinding([FromHeader] string nombre, [FromQuery] string tematica , [FromQuery] string valor)
+        public async Task<ActionResult<AutorDTO>> modelBinding([FromHeader] string nombre, [FromQuery] string tematica , [FromQuery] string valor)
         {
             var autor = await context.Autores.FirstOrDefaultAsync(x => x.Nombre.Contains(nombre));
             if (autor == null)
             {
                 return NotFound();
             }
-            return autor;
+            return mapper.Map<AutorDTO>(autor);
         }
 
         [HttpPost]
