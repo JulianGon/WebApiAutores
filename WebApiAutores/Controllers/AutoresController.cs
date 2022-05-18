@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiAutores.Entidades;
 using WebApiAutores.Filtros;
-using WebApiAutores.Servicios;
 
 namespace WebApiAutores.Controllers
 {
@@ -11,59 +10,21 @@ namespace WebApiAutores.Controllers
     [Route("api/autores")] // Especifica la ruta del controlador, 
     public class AutoresController : ControllerBase
     {
-        private readonly IServicio servicio;
-        private readonly ServicioSingleton servicioSingleton;
-        private readonly ServicioTransient servicioTransient;
-        private readonly ServicioScoped servicioScoped;
-        private readonly ILogger<AutoresController> logger;
         private readonly ApplicationDbContext context;
 
-        public AutoresController (ApplicationDbContext context, IServicio servicio,
-            ServicioSingleton servicioSingleton, ServicioTransient servicioTransient, ServicioScoped servicioScoped,
-            ILogger<AutoresController> logger) // Ejemplo de implementacion de acoplamiento bajo con inversión de dependencias. depender de la interfaz en lugar que de las clases específicas
+        public AutoresController (ApplicationDbContext context)
         {
-            this.servicio = servicio;
-            this.servicioSingleton = servicioSingleton;
-            this.servicioTransient = servicioTransient;
-            this.servicioScoped = servicioScoped;
-            this.logger = logger;
+            
             this.context = context;
         }
 
         [HttpGet] // Especifica la función que se ejecuta con la peticion GET. Utilizando la ruta del controlador api/autores
-        [HttpGet("listado")] // Especifico la ruta del recurso -> api/autores/listado
-        [HttpGet("/listado")] // Especifico la ruta saltándome la ruta del controller.->  /listado
-        //[Authorize]
         public async Task<ActionResult<List<Autor>>> Get() 
         {
-            throw new NotImplementedException();
-            logger.LogInformation("Estamos obteniendo los autores");
-            
-            return await context.Autores.Include(x => x.Libros).ToListAsync();
+            return await context.Autores.ToListAsync();
         }
 
-        [HttpGet("guid")]
-        //[ResponseCache(Duration = 10)] // Si llega una peticion HTTP se guarda en memoria para todas las peticiones siguientes estén cacheadas 
-        [ServiceFilter(typeof(MiFiltroDeAccion))]
-        public ActionResult ObtenerGuids()
-        {
-            return Ok(new
-            {
-                AutoresController_Transient = servicioTransient.guid, //Transient sera distintos en ambos casos ya que siempre devolverá distintas 
-                ServicioA_Transient = servicio.ObtenerTransient(),
-                AutoresController_Scoped = servicioScoped.guid, // Scoped sera igual en ambos casos porque estamos en la misma comunicación HTTP
-                ServicioA_Scoped = servicio.ObtenerScoped(),
-                AutoresController_Singleton = servicioSingleton.guid, // Singleton será igual porque solo se instancia una vez para la aplicacion
-                ServicioA_Singleton = servicio.ObtenerSingleton()
-            });
-        }
-
-        [HttpGet("primero")]    // Especifica otra URL para el mismo metodo HTTP -> api/autores/primero
-        public async Task<ActionResult<Autor>> PrimerAutor()
-        {
-            return await context.Autores.FirstOrDefaultAsync();
-        }
-
+        
         [HttpGet("{id:int}")] // Devuelve un recurso en específico api/autores/1 -> Devuelve el autor específico .
         // Si no especificamos la restricción de :int (HttpGet("{id}") el error al enviar un string será un 400 en lugar del 404 programado en el EndPoint
         public async Task<ActionResult<Autor>> Get (int id)
@@ -97,10 +58,6 @@ namespace WebApiAutores.Controllers
             }
             return autor;
         }
-
-        //[HttpGet("{id:int}/{param2}")] //Varios parametros de ruta
-        //[HttpGet("{id:int}/{param2?}")] //param2 será opcional, sino se especifica sera null
-        //[HttpGet("{id:int}/{param2=persona}")] //param2 cogerá el valor por defecto
 
         [HttpPost]
         public async Task<ActionResult> Post(Autor autor) // El parametro de la funcion será el Request Body 

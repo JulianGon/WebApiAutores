@@ -17,20 +17,8 @@ namespace WebApiAutores.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Libro>> Get(int id)
         {
-            return await context.Libros.Include(x => x.Autor).FirstOrDefaultAsync(x => x.Id.Equals(id));
+            return await context.Libros.FirstOrDefaultAsync(x => x.Id.Equals(id));
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Post(Libro libro)
-        {
-            var existeAutor = await context.Autores.AnyAsync(x => x.Id == libro.AutorId);
-            if (!existeAutor)
-            {
-                return BadRequest($"No se encuentra el autor. id { libro.AutorId}");
-            }
-            context.Add(libro);
-            await context.SaveChangesAsync();
-            return Ok();
-        }
     }
 }
