@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiAutores.Entidades;
+using WebApiAutores.Filtros;
 using WebApiAutores.Servicios;
 
 namespace WebApiAutores.Controllers
@@ -41,7 +42,8 @@ namespace WebApiAutores.Controllers
         }
 
         [HttpGet("guid")]
-        [ResponseCache(Duration = 10)] // Si llega una peticion HTTP se guarda en memoria para todas las peticiones siguientes estén cacheadas 
+        //[ResponseCache(Duration = 10)] // Si llega una peticion HTTP se guarda en memoria para todas las peticiones siguientes estén cacheadas 
+        [ServiceFilter(typeof(MiFiltroDeAccion))]
         public ActionResult ObtenerGuids()
         {
             return Ok(new
