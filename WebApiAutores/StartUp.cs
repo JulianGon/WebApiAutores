@@ -22,7 +22,10 @@ namespace WebApiAutores
         public void ConfigureServices(IServiceCollection services) {
 
 
-            services.AddControllers().AddJsonOptions (x =>
+            services.AddControllers(opciones =>{ 
+                opciones.Filters.Add(typeof(FiltroDeExcepcion));    // Filtro de excepcion global 
+            
+            }).AddJsonOptions (x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles    // Eliminamos el bucle de libro-Autor
             );
 
@@ -40,6 +43,7 @@ namespace WebApiAutores
             services.AddTransient<ServicioTransient>();
             services.AddScoped<ServicioScoped>();
             services.AddSingleton<ServicioSingleton>();
+
             services.AddTransient<MiFiltroDeAccion>();
 
             services.AddEndpointsApiExplorer();

@@ -33,9 +33,10 @@ namespace WebApiAutores.Controllers
         [HttpGet] // Especifica la función que se ejecuta con la peticion GET. Utilizando la ruta del controlador api/autores
         [HttpGet("listado")] // Especifico la ruta del recurso -> api/autores/listado
         [HttpGet("/listado")] // Especifico la ruta saltándome la ruta del controller.->  /listado
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<List<Autor>>> Get() 
         {
+            throw new NotImplementedException();
             logger.LogInformation("Estamos obteniendo los autores");
             
             return await context.Autores.Include(x => x.Libros).ToListAsync();
