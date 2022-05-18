@@ -45,6 +45,8 @@ namespace WebApiAutores
             services.AddSingleton<ServicioSingleton>();
 
             services.AddTransient<MiFiltroDeAccion>();
+            services.AddHostedService<EscribirEnArchivo>();
+
 
             services.AddEndpointsApiExplorer();
 
