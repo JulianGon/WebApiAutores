@@ -23,7 +23,12 @@ namespace WebApiAutores.Controllers
         public async Task<ActionResult<LibroDTO>> Get(int id)
         {
 
-            var libro = await context.Libros.Include(libroDb => libroDb.Comentarios).FirstOrDefaultAsync(x => x.Id.Equals(id));
+            var libro = await context.Libros
+                .Include(libroDb => libroDb.AutoresLibros) // JOIN AutorLibro
+                .ThenInclude(autorLibroDb => autorLibroDb.Autor) // JOIN Autor para traerme el nombre del autor (q lo muestro con AutoMapper)
+                .FirstOrDefaultAsync(x => x.Id.Equals(id));
+
+            libro.AutoresLibros = libro.AutoresLibros.OrderBy(x => x.Orden).ToList(); // Ordeno
             return mapper.Map<LibroDTO>(libro);
         }
 

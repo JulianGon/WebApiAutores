@@ -13,10 +13,28 @@ namespace WebApiAutores.Utilidades
             CreateMap<LibroCreacionDTO, Libro>()
                 // Especificamos el mapeo con la funcion MapAutoresLibros() para incluir el mapeo de la tabla AutorLibro (M:M) al crear un Libro Nuevo en su Controller
                 .ForMember(libro => libro.AutoresLibros, opciones => opciones.MapFrom(MapAutoresLibros));
-            CreateMap<Libro, LibroDTO>();
+
+            CreateMap<Libro, LibroDTO>()
+                // Especificamos el mapeo para que traiga el nombre del Autor
+                .ForMember(libroDTO => libroDTO.Autores, opciones => opciones.MapFrom(MapLibroDTOAutores));
             CreateMap<ComentarioCreacionDTO,Comentario>();
             CreateMap<Comentario, ComentarioDTO>();
 
+        }
+
+        // Mapeo el List<AutorDTO> q es campo de LibroDTO con los datos relacionados en AutorLibro para traerme sus nombres
+        private List<AutorDTO> MapLibroDTOAutores(Libro libro, LibroDTO libroDTO) 
+        { 
+            var resultado = new List<AutorDTO>();   
+            if (libro.AutoresLibros == null) { return resultado; }
+            foreach ( var autorLibro in libro.AutoresLibros)
+            {
+                resultado.Add(new AutorDTO() {
+                    id = autorLibro.AutorId,
+                    Nombre = autorLibro.Autor.Nombre
+                });
+            }
+            return resultado;
         }
 
         // Transforma el List<int> de la DTO de LibroCreacionDTO a el List<AutorLibros> de la entidad Libro
