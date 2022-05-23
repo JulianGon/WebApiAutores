@@ -12,6 +12,8 @@ namespace WebApiAutores.Utilidades
             CreateMap<Autor, AutorDTO>();   // El origen es el Autor de la BBDD y el destino es devolverle la información al cliente  
             CreateMap<LibroCreacionDTO, Libro>();
             CreateMap<Libro, LibroDTO>();
+            CreateMap<ComentarioCreacionDTO,Comentario>();
+            CreateMap<Comentario, ComentarioDTO>();
         }
     }
 }
