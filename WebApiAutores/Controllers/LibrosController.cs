@@ -23,7 +23,7 @@ namespace WebApiAutores.Controllers
         public async Task<ActionResult<LibroDTO>> Get(int id)
         {
 
-            var libro = await context.Libros.FirstOrDefaultAsync(x => x.Id.Equals(id));
+            var libro = await context.Libros.Include(libroDb => libroDb.Comentarios).FirstOrDefaultAsync(x => x.Id.Equals(id));
             return mapper.Map<LibroDTO>(libro);
         }
 
