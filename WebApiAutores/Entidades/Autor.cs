@@ -12,7 +12,8 @@ namespace WebApiAutores.Entidades
         [StringLength(maximumLength:120, ErrorMessage = "Maximo {1} caracteres para el campo {0}")]
         [PrimeraLetraMayus]
         public string Nombre { get; set; }
-              
+        public List<AutorLibro> AutoresLibros { get; set; }//Propiedad de navegacion,
+
 
     }
 }
