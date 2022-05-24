@@ -9,17 +9,37 @@ namespace WebApiAutores.Utilidades
         public AutoMapperProfiles()
         {
             CreateMap<AutorCreacionDTO, Autor>(); // Mapeamos las DTO con la clase de EF a mapear 
-            CreateMap<Autor, AutorDTO>();   // El origen es el Autor de la BBDD y el destino es devolverle la información al cliente  
+            CreateMap<Autor, AutorDTO>();
+            CreateMap<Autor, AutorDTOConLibros>()// El origen es el Autor de la BBDD y el destino es devolverle la información al cliente  
+                .ForMember(autorDTO => autorDTO.Libros, opciones => opciones.MapFrom(MapAutorDTOLibros));   
+           
             CreateMap<LibroCreacionDTO, Libro>()
                 // Especificamos el mapeo con la funcion MapAutoresLibros() para incluir el mapeo de la tabla AutorLibro (M:M) al crear un Libro Nuevo en su Controller
                 .ForMember(libro => libro.AutoresLibros, opciones => opciones.MapFrom(MapAutoresLibros));
 
-            CreateMap<Libro, LibroDTO>()
+            CreateMap<Libro, LibroDTO>();
+            CreateMap<Libro, LibroDTOConAutores>()
                 // Especificamos el mapeo para que traiga el nombre del Autor
                 .ForMember(libroDTO => libroDTO.Autores, opciones => opciones.MapFrom(MapLibroDTOAutores));
             CreateMap<ComentarioCreacionDTO,Comentario>();
             CreateMap<Comentario, ComentarioDTO>();
 
+        }
+
+        // Mapeo el List<LibroDTO> q es un campo de AutorDTO con los datos relacionados en AutorLibro para traerme los titulos 
+        private List<LibroDTO> MapAutorDTOLibros(Autor autor, AutorDTO autorDTO)
+        {
+            var resultado = new List<LibroDTO>();
+            if (autor.AutoresLibros == null) { return resultado; }
+            foreach ( var autorLibro in autor.AutoresLibros)
+            {
+                resultado.Add(new LibroDTO()
+                {
+                    Id = autorLibro.LibroId,
+                    Titulo = autorLibro.Libro.Titulo
+                });
+            }
+            return resultado;
         }
 
         // Mapeo el List<AutorDTO> q es campo de LibroDTO con los datos relacionados en AutorLibro para traerme sus nombres
