@@ -30,7 +30,7 @@ namespace WebApiAutores.Controllers
         }
 
         
-        [HttpGet("{id:int}")] // Devuelve un recurso en específico api/autores/1 -> Devuelve el autor específico .
+        [HttpGet("{id:int}",Name = "obtenerAutor")] // Devuelve un recurso en específico api/autores/1 -> Devuelve el autor específico .
         // Si no especificamos la restricción de :int (HttpGet("{id}") el error al enviar un string será un 400 en lugar del 404 programado en el EndPoint
         public async Task<ActionResult<AutorDTOConLibros>> Get (int id)
         {
@@ -78,7 +78,10 @@ namespace WebApiAutores.Controllers
 
             context.Add(autor);
             await context.SaveChangesAsync(); // Salva los cambios en la BBDD
-            return Ok();
+
+            var autorDTO = mapper.Map<AutorDTO>(autor);
+            // Con el nombre mapeado del GET, el recurso a devolver (Con un objeto anónimo) y la DTO del autor 
+            return CreatedAtRoute("obtenerAutor", new {id = autor.Id }, autorDTO);
         }
 
         [HttpPut("{id:int}")] //api/autores/algo {} -> parámetro de ruta 
