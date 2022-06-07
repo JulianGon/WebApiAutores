@@ -32,6 +32,17 @@ namespace WebApiAutores.Controllers
             return mapper.Map<List<ComentarioDTO>>(comentarios);
         }
 
+        [HttpGet("{id:int}", Name ="obtenerComentario")]
+        public async Task<ActionResult<ComentarioDTO>> GetPorId (int id)
+        {
+            var comentario = await context.Comentarios.FirstOrDefaultAsync(comentario => comentario.Id.Equals(id));
+            if (comentario == null)
+            {
+                return NotFound();
+            }
+            return mapper.Map<ComentarioDTO>(comentario);
+        }
+
 
 
         [HttpPost]
@@ -46,7 +57,9 @@ namespace WebApiAutores.Controllers
             comentario.LibroId = libroId;
             context.Add(comentario);
             await context.SaveChangesAsync();
-            return Ok();
+            var comentarioDTO = mapper.Map<ComentarioDTO>(comentario);
+            // En este caso le tengo que pasar también el ID del libro ya que la ruta del recurso es https://localhost:7033/api/libros/4/comentarios/6
+            return CreatedAtRoute("obtenerComentario", new { id = comentario.Id , libroId = libroId }, comentarioDTO);
 
         }
     }
