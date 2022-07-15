@@ -85,13 +85,8 @@ namespace WebApiAutores.Controllers
         }
 
         [HttpPut("{id:int}")] //api/autores/algo {} -> parámetro de ruta 
-        public async Task<ActionResult> Put(Autor autor, int id)    // la variable id coincide con el parametro de ruta en el Http
+        public async Task<ActionResult> Put(AutorCreacionDTO autorCreacionDTO, int id)    // la variable id coincide con el parametro de ruta en el Http
         {
-            
-            if (autor.Id != id) // El Id del autor del Request body no coincide con el id que se envía por la URL 
-            {
-                return BadRequest("El id no coincide"); //Error 400
-            }
 
             var existe = await context.Autores.AnyAsync(x => x.Equals(id)); // Busco el id en la BBDD mediante el objeto EF y métodos LinQ (DbSet)
             if (!existe)
@@ -99,9 +94,12 @@ namespace WebApiAutores.Controllers
                 return NotFound();
             }
 
+            var autor = mapper.Map<Autor>(autorCreacionDTO);
+            autor.Id = id;
+
             context.Update(autor); // Este objeto de autor ya tiene todos los cambios a realizar en la BBDD 
             await context.SaveChangesAsync();
-            return Ok();
+            return NoContent(); // 204 No Content
         }
 
         [HttpDelete("{id:int}")]

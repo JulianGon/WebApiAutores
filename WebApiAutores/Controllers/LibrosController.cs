@@ -50,14 +50,7 @@ namespace WebApiAutores.Controllers
             }
 
             var libro = mapper.Map<Libro>(libroCreacionDTO);  // En el mapeo de LibroCreacionDTO a Libro se ha especificado la transformación del List<int> de la DTO a List<AutorLibro> de la entidad Libro
-
-            if (libro.AutoresLibros != null)    // Se crea un orden aleatorio de los libros 
-            {
-                for (int i = 0; i < libro.AutoresLibros.Count; i++)
-                {
-                    libro.AutoresLibros[i].Orden = i;
-                }
-            }
+            AsignarOrdenAutores(libro);    
 
 
             context.Add(libro);
@@ -65,6 +58,37 @@ namespace WebApiAutores.Controllers
             var libroDTO = mapper.Map<LibroDTO>(libro);
             return CreatedAtRoute("obtenerLibro", new {id = libro.Id}, libroDTO);
 
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put (int id, LibroCreacionDTO libroCreacionDTO)
+        {
+            var libroDB = await context.Libros
+                .Include(x => x.AutoresLibros)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            if (libroDB == null)
+            {
+                return NotFound();
+            }
+            // Devuelve:
+            //     The mapped destination object, same instance as the destination object
+            libroDB = mapper.Map(libroCreacionDTO, libroDB); // Con esto conseguimos modificar los autores del libro y los libros de los autores 
+            AsignarOrdenAutores(libroDB);
+            s
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        private void AsignarOrdenAutores(Libro libro)
+        {
+            
+            if (libro.AutoresLibros != null)    // Se crea un orden aleatorio de los libros 
+            {
+                for (int i = 0; i < libro.AutoresLibros.Count; i++)
+                {
+                    libro.AutoresLibros[i].Orden = i;
+                }
+            }
         }
 
     }
