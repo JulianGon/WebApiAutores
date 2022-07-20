@@ -28,7 +28,10 @@ namespace WebApiAutores.Controllers
                 .Include(libroDb => libroDb.AutoresLibros) // JOIN AutorLibro
                 .ThenInclude(autorLibroDb => autorLibroDb.Autor) // JOIN Autor para traerme el nombre del autor (q lo muestro con AutoMapper)
                 .FirstOrDefaultAsync(x => x.Id.Equals(id));
-
+            if (libro == null)
+            {
+                return NotFound();
+            }
             libro.AutoresLibros = libro.AutoresLibros.OrderBy(x => x.Orden).ToList(); // Ordeno
             return mapper.Map<LibroDTOConAutores>(libro);
         }
@@ -108,6 +111,22 @@ namespace WebApiAutores.Controllers
 
             await context.SaveChangesAsync();
             return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id) 
+        {
+            var existe = await context.Libros.AnyAsync(x => x.Id.Equals(id));
+            if (!existe)
+            {
+                return NotFound();
+            }
+
+            context.Remove(new Libro { Id = id }); //Instancio un autor para pasarle al Remove
+            // Este delete elimina el libro, los comentarios del libro y la relación entre Autores y Libros M:M en dbo.AutoresLibros. Pero no al autor (Evidentemente)
+            await context.SaveChangesAsync();
+            return Ok();
+
         }
 
         private void AsignarOrdenAutores(Libro libro)
