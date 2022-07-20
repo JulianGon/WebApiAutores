@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WebApiAutores.Entidades;
 
 namespace WebApiAutores.DTOs
 {
@@ -6,6 +7,7 @@ namespace WebApiAutores.DTOs
     {
         public int Id { get; set; }
         [Required]
+        [PrimeraLetraMayuscula]
         public string Titulo { get; set; }
         public DateTime FechaPublicacion
         {

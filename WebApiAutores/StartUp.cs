@@ -21,12 +21,13 @@ namespace WebApiAutores
         public void ConfigureServices(IServiceCollection services) {
 
 
-            services.AddControllers(opciones =>{ 
+            services.AddControllers(opciones =>
+            {
                 opciones.Filters.Add(typeof(FiltroDeExcepcion));    // Filtro de excepcion global 
-            
-            }).AddJsonOptions (x =>
+
+            }).AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles    // Eliminamos el bucle de libro-Autor
-            );
+            ).AddNewtonsoftJson(); 
 
             //Configuración para el DbContext 
             services.AddDbContext<ApplicationDbContext>(options =>
