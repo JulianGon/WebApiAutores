@@ -66,6 +66,7 @@ namespace WebApiAutores.Utilidades
             {
                 resultado.Add(new AutorLibro() { AutorId = autorId }); // Como estoy creando un Libro no mapeo el LibroId
             }
+            //libro.fechaPublicacion = libroCreacionDTO.FechaPublicacionLibro;
             return resultado;
         }
     }

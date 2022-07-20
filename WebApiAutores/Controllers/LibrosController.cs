@@ -65,7 +65,7 @@ namespace WebApiAutores.Controllers
         {
             var libroDB = await context.Libros
                 .Include(x => x.AutoresLibros)
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id); //libroDB al ser entidad Libro EF conoce la relación con Autores
             if (libroDB == null)
             {
                 return NotFound();
@@ -74,7 +74,7 @@ namespace WebApiAutores.Controllers
             //     The mapped destination object, same instance as the destination object
             libroDB = mapper.Map(libroCreacionDTO, libroDB); // Con esto conseguimos modificar los autores del libro y los libros de los autores 
             AsignarOrdenAutores(libroDB);
-            s
+            
             await context.SaveChangesAsync();
             return NoContent();
         }
