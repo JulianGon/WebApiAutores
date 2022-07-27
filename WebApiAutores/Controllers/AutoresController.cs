@@ -14,12 +14,22 @@ namespace WebApiAutores.Controllers
     {
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
+        private readonly IConfiguration configuration;
 
-        public AutoresController (ApplicationDbContext context, IMapper mapper)
+        public AutoresController (ApplicationDbContext context, IMapper mapper, IConfiguration configuration)
         {
             
             this.context = context;
             this.mapper = mapper;
+            this.configuration = configuration;
+        }
+
+        [HttpGet("configuraciones")]
+        public ActionResult<string> ObtenerConfiguracion()
+        {
+            configuration.GetConnectionString("defaultConnection"); // Forma 1
+
+            return configuration["connectionStrings:defaultConnection"]; // Forma 2
         }
 
         [HttpGet] // Especifica la función que se ejecuta con la peticion GET. Utilizando la ruta del controlador api/autores

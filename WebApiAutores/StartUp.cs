@@ -16,7 +16,7 @@ namespace WebApiAutores
 
         }
         
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; } // Por defecto
 
         public void ConfigureServices(IServiceCollection services) {
 
