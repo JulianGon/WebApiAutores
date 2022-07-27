@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using WebApiAutores.Entidades;
 
 namespace WebApiAutores
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         // Las opciones recibicdas en el constructor pueden recibir la cadena de conexión por ejemplo 
         public ApplicationDbContext(DbContextOptions options) : base(options)
@@ -12,7 +13,8 @@ namespace WebApiAutores
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder); // Esto debe de estar aqui, sino EF Identity no funciona
+
             modelBuilder.Entity<AutorLibro>()
                 .HasKey(al => new { al.AutorId, al.LibroId }); // Creamos la PK de AutorLibro con las PK de Autor y de Libro
         }

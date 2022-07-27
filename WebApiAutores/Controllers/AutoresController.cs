@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,16 +25,10 @@ namespace WebApiAutores.Controllers
             this.configuration = configuration;
         }
 
-        [HttpGet("configuraciones")]
-        public ActionResult<string> ObtenerConfiguracion()
-        {
-            configuration.GetConnectionString("defaultConnection"); // Forma 1
-
-            //el comando -> dotnet run --"apellido=apellido desde linea de comandos" \|Argumentos que pasan como un proveedor de configuracion. Viene bien para Docker
-            return configuration["apellido"]; // Forma 2
-        }
+        
 
         [HttpGet] // Especifica la función que se ejecuta con la peticion GET. Utilizando la ruta del controlador api/autores
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme )]    // Configurado en StartUp 
         public async Task<ActionResult<List<AutorDTO>>> Get() 
         {
             var autores = await context.Autores.ToListAsync();

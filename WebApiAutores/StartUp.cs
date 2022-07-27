@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using WebApiAutores.Controllers;
@@ -35,12 +36,17 @@ namespace WebApiAutores
                 );
             services.AddEndpointsApiExplorer();
 
-
+            // Authorize JwtBearerDefaults es el AuthenticationSkin
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
             services.AddSwaggerGen();
 
             services.AddAutoMapper(typeof(StartUp));
+
+            // Arrancamos EF para el DbContext de usuarios y logueo 
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<StartUp> servLogger) {
