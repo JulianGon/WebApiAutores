@@ -29,6 +29,7 @@ namespace WebApiAutores.Controllers
         {
             configuration.GetConnectionString("defaultConnection"); // Forma 1
 
+            //el comando -> dotnet run --"apellido=apellido desde linea de comandos" \|Argumentos que pasan como un proveedor de configuracion. Viene bien para Docker
             return configuration["apellido"]; // Forma 2
         }
 
