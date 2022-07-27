@@ -29,7 +29,7 @@ namespace WebApiAutores.Controllers
         {
             configuration.GetConnectionString("defaultConnection"); // Forma 1
 
-            return configuration["connectionStrings:defaultConnection"]; // Forma 2
+            return configuration["apellido"]; // Forma 2
         }
 
         [HttpGet] // Especifica la función que se ejecuta con la peticion GET. Utilizando la ruta del controlador api/autores
