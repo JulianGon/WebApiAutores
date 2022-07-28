@@ -11,6 +11,7 @@ namespace WebApiAutores.Controllers
 {
     [ApiController] // Permite validaciones automaticas respecto a los datos recibidos por el controlador
     [Route("api/autores")] // Especifica la ruta del controlador, 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]    // Configurado en StartUp 
     public class AutoresController : ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -28,7 +29,7 @@ namespace WebApiAutores.Controllers
         
 
         [HttpGet] // Especifica la función que se ejecuta con la peticion GET. Utilizando la ruta del controlador api/autores
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme )]    // Configurado en StartUp 
+        [AllowAnonymous] // Saca al Endpoint del Authorize
         // Al final de toda la autenticación,a la petición se le añade el siguiente Header:
         //      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlhbkBob2xhbWFpbC5jb20iLCJsbyBxdWUgcXVpZXJhIjoib3RybyBWYWxvciIsImV4cCI6MTY1OTExNzU1OX0.bvZb7ugHkQqVdSmA67bE8ql9IVBuPDkPt6ad_VUumKY"
         public async Task<ActionResult<List<AutorDTO>>> Get() 
