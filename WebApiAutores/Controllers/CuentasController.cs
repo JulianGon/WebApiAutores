@@ -14,12 +14,15 @@ namespace WebApiAutores.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly IConfiguration configuration;
+        private readonly SignInManager<IdentityUser> signInManager;
 
         public CuentasController(UserManager<IdentityUser> userManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            SignInManager<IdentityUser> signInManager) 
         {
             this.userManager = userManager;
             this.configuration = configuration;
+            this.signInManager = signInManager;
         }
 
 
@@ -49,7 +52,27 @@ namespace WebApiAutores.Controllers
             }
 
         }
+
+
+        [HttpPost("login")]
+        public async Task<ActionResult<RespuestaAutenticacionDTO>> Login(CredencialesUsiarioDTO credencialesUsiarioDTO) 
+        {
+            var resultado = await signInManager.PasswordSignInAsync(credencialesUsiarioDTO.Email,
+                credencialesUsiarioDTO.Password,
+                isPersistent: false, // Cookie de autenticación, OFF
+                lockoutOnFailure: false // Bloquea a los usuarios cuyos login sean incorrectos, lo dejo Off
+                );
+            if (resultado.Succeeded)
+            {
+                return ConstruirToken(credencialesUsiarioDTO);
+            }
+            else
+            {
+                return BadRequest("Login incorrecto");
+            }
         
+        }
+         
         /// <summary>
         /// Genera el token que se le devolverá al usuario para las siguientes peticiones. Se generan los claims y el resto de información necesaria para 
         /// 

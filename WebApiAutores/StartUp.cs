@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json.Serialization;
 using WebApiAutores.Controllers;
 using WebApiAutores.Filtros;
@@ -37,7 +39,18 @@ namespace WebApiAutores
             services.AddEndpointsApiExplorer();
 
             // Authorize JwtBearerDefaults es el AuthenticationSkin
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                // Configuración de JwtBearer
+                .AddJwtBearer(opciones => opciones.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true, // Tiempo de validez
+                    ValidateIssuerSigningKey = true, // Validamos la firma del Token
+                    IssuerSigningKey = new SymmetricSecurityKey(    // Metemos la firma del token
+                        Encoding.UTF8.GetBytes(Configuration["llaveJWT"])),
+                    ClockSkew = TimeSpan.Zero // Para no tener problemas de tiempo
+                });
 
             services.AddSwaggerGen();
 
