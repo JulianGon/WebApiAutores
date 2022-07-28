@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 using WebApiAutores.Controllers;
@@ -52,7 +53,34 @@ namespace WebApiAutores
                     ClockSkew = TimeSpan.Zero // Para no tener problemas de tiempo
                 });
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            // Configuración de Swagger
+            {
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "WebApiAutores", Version = "v1" });
+                // Configuración para el Token Swagger
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme //Microsoft.OpenApi.Models
+                {
+                    Name = "Authorization",
+                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = Microsoft.OpenApi.Models.ParameterLocation.Header
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
+                });
+            });
 
             services.AddAutoMapper(typeof(StartUp));
 
