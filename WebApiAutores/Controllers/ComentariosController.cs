@@ -58,7 +58,7 @@ namespace WebApiAutores.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> Post (int libroId, ComentarioCreacionDTO comentarioCreacionDTO)
         {
-            //HttpContext ya contite los claims de la petición
+            //HttpContext ya contite los claims de la petición. Esto es gracias a Authorize -> Microsoft.AspNetCore.Authorization
             var emailClaim = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault();
             var email = emailClaim.Value;   // Saco el valor 
             var usuario = await userManager.FindByEmailAsync(email);
