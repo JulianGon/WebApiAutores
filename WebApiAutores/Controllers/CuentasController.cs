@@ -27,13 +27,13 @@ namespace WebApiAutores.Controllers
 
 
         [HttpPost("registrar")] //api/cuentas/registrar
-        public async Task<ActionResult<RespuestaAutenticacionDTO>> Registrar(CredencialesUsiarioDTO credencialesUsiario)
+        public async Task<ActionResult<RespuestaAutenticacionDTO>> Registrar(CredencialesUsiarioDTO credencialesUsiarioDTO)
         {
             var usuario = new IdentityUser {
-                UserName = credencialesUsiario.Email,
-                Email = credencialesUsiario.Email
+                UserName = credencialesUsiarioDTO.Email,
+                Email = credencialesUsiarioDTO.Email
             };
-            var resultado = await userManager.CreateAsync(usuario, credencialesUsiario.Password);
+            var resultado = await userManager.CreateAsync(usuario, credencialesUsiarioDTO.Password);
             if (resultado.Succeeded)
             {
                 //************ -->  JSON WEB TOKEN  RFC 7519.
@@ -45,7 +45,7 @@ namespace WebApiAutores.Controllers
                 //Payload: donde aparecen los datos de usuario y privilegios, así como toda la información que queramos añadir,
                 //todos los datos que creamos convenientes.
                 //Signature: una firma que nos permite verificar si el token es válido, 
-                return ConstruirToken(credencialesUsiario);
+                return ConstruirToken(credencialesUsiarioDTO);
             }
             else{
                 return BadRequest(resultado.Errors);

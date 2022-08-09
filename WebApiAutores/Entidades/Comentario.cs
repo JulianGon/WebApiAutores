@@ -1,4 +1,6 @@
-﻿namespace WebApiAutores.Entidades
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace WebApiAutores.Entidades
 {
     public class Comentario
     {
@@ -8,6 +10,10 @@
 
         //Propiedad de navegacioon, permite hacer JOIN de una manera distinta. **Con el include
         public  Libro Libro { get; set; }
+
+        public string UsuarioID { get; set; }
+
+        public IdentityUser Usuario { get; set; }   // Representa al usuario en el sisstema 
 
     }
 }
