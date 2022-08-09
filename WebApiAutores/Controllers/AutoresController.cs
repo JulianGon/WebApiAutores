@@ -11,7 +11,7 @@ namespace WebApiAutores.Controllers
 {
     [ApiController] // Permite validaciones automaticas respecto a los datos recibidos por el controlador
     [Route("api/autores")] // Especifica la ruta del controlador, 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]    // Configurado en StartUp 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]    // Configurado en StartUp 
     public class AutoresController : ControllerBase
     {
         private readonly ApplicationDbContext context;

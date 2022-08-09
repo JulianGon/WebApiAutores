@@ -89,6 +89,16 @@ namespace WebApiAutores
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            // Si el usuario tiene un claim de "EsAdmin" entonces será admin 
+            services.AddAuthorization(opciones =>
+            {
+                // se especifica el claim en el endpoint o en su controller en la etiqueta Authorize -> Policy = "EsAdmin"
+                opciones.AddPolicy("EsAdmin", politica => politica.RequireClaim("esAdmin"));
+                // Podemos añadir más como vendedores, comerciales...
+                //opciones.AddPolicy("EsVendedor", politica => politica.RequireClaim("esVendedor")); // Este claim solo es para los vendedores
+
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<StartUp> servLogger) {
